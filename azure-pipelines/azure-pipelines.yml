@@ -20,12 +20,22 @@ steps:
 
 - task: SonarCloudPrepare@1
   inputs:
-    SonarCloud: 'YOUR_SONARCLOUD_SERVICE_CONNECTION'
-    organization: 'your-org'
+    SonarCloud: 'SonarCloudConnection'
+    organization: 'vineeth157777'
     scannerMode: 'CLI'
     configMode: 'manual'
-    cliProjectKey: 'azure-devops-migration-app'
-    cliProjectName: 'Azure DevOps Migration App'
+    cliProjectKey: 'azure-devops-migration-project'
+    cliProjectName: 'azure-devops-migration-project'
+    extraProperties: |
+      sonar.login=$(SonarCloudToken)  # 🔐 Inject the token from Key Vault
+
+- script: |
+    sonar-scanner -Dproject.settings=sonar/sonar-project.properties
+  displayName: 'Run SonarCloud Analysis'
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
 
 - script: |
     sonar-scanner -Dproject.settings=sonar/sonar-project.properties
