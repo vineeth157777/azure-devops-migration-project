@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: Default
 
 steps:
 - task: NodeTool@0
@@ -27,11 +27,6 @@ steps:
     configMode: 'manual'
     cliProjectKey: 'azure-devops-migration-project'
     cliProjectName: 'azure-devops-migration-project'
-
-# Run SonarCloud Analysis using project properties
-- script: |
-    sonar-scanner -Dproject.settings=sonar/sonar-project.properties
-  displayName: 'Run SonarCloud Analysis'
 
 # Publish SonarCloud Results
 - task: SonarCloudPublish@1
