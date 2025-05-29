@@ -1,0 +1,36 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+  displayName: 'Install Dependencies'
+
+- script: |
+    npm test
+  displayName: 'Run Tests'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'YOUR_SONARCLOUD_SERVICE_CONNECTION'
+    organization: 'your-org'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'azure-devops-migration-app'
+    cliProjectName: 'Azure DevOps Migration App'
+
+- script: |
+    sonar-scanner -Dproject.settings=sonar/sonar-project.properties
+  displayName: 'Run SonarQube Analysis'
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
